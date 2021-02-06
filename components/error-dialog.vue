@@ -38,7 +38,7 @@
 /**
  * this page is loaded by ALL pages * 
  */
-import {debug} from '../vendors/lib/logging';
+import {debug} from '../lib/logging';
 
 export default {
   data: function() {
