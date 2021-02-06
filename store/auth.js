@@ -1,3 +1,6 @@
+/**
+ * global authentication
+ */
 
 import { axiosActions } from '../lib/const';
 import { debug, warn, error } from '../lib/logging';
