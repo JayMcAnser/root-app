@@ -40,7 +40,14 @@
 </template>
 
 <script>
-  import {error} from '../lib/logging'
+  /**
+   * emits: 
+   *   - login:success as user did loging
+   *   - login:fail if an error occured
+   *   - login:cancel if the user presses the cancel button
+   */
+
+  import {error, debug} from '../lib/logging'
   export default {
     name: 'login-form',
     data(){
@@ -63,20 +70,22 @@
       login: function () {
         let email = this.email
         let password = this.password
+        let vm = this;
         this.$store.dispatch('auth/login', { username: email, password: password })
-          .then(() => {
-           // this.$router.push('/') 
-           console.log('Did login')
-            }
-          )
+          .then((result) => {
+            debug(`user ${email} did loging`, 'login-form')
+            vm.$emit('login:success', result)
+
+          })
           .catch( (err) => {
-            this.errorMessage = err.message
-            // error(err.message, 'login')
-          }
-          )
+            error(err, 'login-form')
+            vm.errorMessage = err.message
+            vm.$emit('login:fail', err)           
+          })
       },
       cancel: function() {
-        this.$router.push('/')
+        debug('user cancled', 'login-form')
+        this.$emit('login:cancel')        
       },
       requestPassword() {
         alert('please send a message to us so we can help you')

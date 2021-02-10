@@ -6,7 +6,7 @@ const authRouter = [
   {
     path: '/login',
     name: 'login',
-    component: () => import('../pages/login.vue')
+    component: () => import(/* webpackChunkName: "auth" */'../pages/login.vue')
   },
 ]
 
