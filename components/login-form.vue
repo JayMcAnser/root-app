@@ -73,9 +73,8 @@
         let vm = this;
         this.$store.dispatch('auth/login', { username: email, password: password })
           .then((result) => {
-            debug(`user ${email} did loging`, 'login-form')
+            debug(`user ${email} did login`, 'login-form')
             vm.$emit('login:success', result)
-
           })
           .catch( (err) => {
             error(err, 'login-form')

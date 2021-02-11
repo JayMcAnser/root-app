@@ -42,6 +42,9 @@ export const actions = {
   },
   async rightDrawer({commit}, show) {
     commit('rightDrawer', show)
+  },
+  async apiStatus({commit}, status) {
+    commit('apiState', status)
   }
 }
 export const getters = {

@@ -18,6 +18,13 @@
           
           <v-card-text><br/>{{ errorMessage }}</v-card-text>
           <v-card-actions>
+             <v-btn
+              color="green darken-1"
+              text
+              @click="$emit('cancel')"
+            >
+              {{cancelLabel}}
+            </v-btn>     
             <v-spacer></v-spacer>
             <v-btn
               color="green darken-1"
@@ -49,6 +56,10 @@ export default {
     actionLabel: {
       type: String,
       default: 'Retry'
+    },
+    cancelLabel: {
+      type: String,
+      default: 'Cancel'
     },
     openURL: {
       type: String,
