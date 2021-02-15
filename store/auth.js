@@ -14,6 +14,7 @@ export const state = () => ({
   email: '',
   password: '',
   token: '',
+  rights: [],
   resfreshToken: '',
   events: [],
 })
@@ -28,6 +29,7 @@ export const mutations = {
     state.username = info.user.name;
     state.email = info.user.email;
     state.token = info.token;    
+    state.rights = info.rights;
     setHeaders(state.token)    
     if (info.refreshToken) {
       // only when its a true login, not a /refresh
@@ -48,6 +50,7 @@ export const mutations = {
     state.password = '';
     state.token = '',
     state.refreshToken = '';
+    state.rights = [];
   },
 
   /**   
@@ -177,7 +180,14 @@ export const getters = {
     } else {
       error(`eventlist needs an action paramater`)
     }
+  },
+  rights: (state) => {
+    return state.rights
+  },
+  hasRights: (state) => (right) => {
+    return state.rights.indexOf(right) >= 0;
   }
+  
 }
 
 export const auth = {

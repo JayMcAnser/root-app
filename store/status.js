@@ -1,4 +1,4 @@
-import { error as errorReport} from "../lib/logging";
+import { debug, error, error as errorReport, warn} from "../lib/logging";
 import { apiState } from '../lib/const';
 
 export const state = () => ({
@@ -6,6 +6,11 @@ export const state = () => ({
   status: apiState.idle,
   leftDrawer: false,
   rightDrawer: false,
+  actions: {},
+  dialog: {
+    name: '',
+    id: 0,
+  }
 })
 
 export const mutations = {  
@@ -27,7 +32,17 @@ export const mutations = {
   },
   rightDrawer(state, show) {
     state.rightDrawer = !! show
-  }
+  },
+  toggleRightDrawer(state) {
+    state.rightDrawer = !state.rightDrawer
+  },
+  dialog(state, show) {
+    state.dialog = {
+      name: show.name,
+      id: show.id === '' || !show.id || show.id === '0' || undefined ? false : show.id
+    }
+  },
+  
 }
 
 export const actions = {
@@ -43,8 +58,23 @@ export const actions = {
   async rightDrawer({commit}, show) {
     commit('rightDrawer', show)
   },
+  async toggleRightDrawer({commit}) {
+    debug(`toggle right drawer`, 'status');
+    commit('toggleRightDrawer');
+  },
   async apiStatus({commit}, status) {
     commit('apiState', status)
+  },
+  dialog({commit}, status) {
+    if (typeof status === 'string') {
+      commit('dialog', {name: status, id: 0})  
+    } else if (typeof status === 'object') {
+      commit('dialog', status)
+    } else if (typeof status === 'boolean' || status === undefined) {
+      commit('dialog', {name: '', id: 0})
+    } else {
+      warn(`unknonw dialog type ${JSON.stringify(status)}`)
+    }
   }
 }
 export const getters = {
@@ -52,7 +82,9 @@ export const getters = {
   isOk: (state) => { return state.status === ''},
   errorMessage: (state) => { return state.message},  
   leftDrawer: (state) => { return state.leftDrawer},
-  rightDrawer: (state) => { return state.rightDrawer},
+  rightDrawer: (state) => { return state.rightDrawer},  
+  dialogName: (state) => state.dialog.name,
+  dialogId: (state) => state.dialog.id,
 }
 
 export const status = {
