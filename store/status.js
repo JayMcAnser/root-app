@@ -41,6 +41,7 @@ export const mutations = {
       name: show.name,
       id: show.id === '' || !show.id || show.id === '0' || undefined ? false : show.id
     }
+    debug(`dialog: ${state.dialog.name} on id: ${state.dialog.id}`, 'status.dialog')
   },
   
 }
