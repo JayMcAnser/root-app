@@ -19,7 +19,7 @@ export const state = () => ({
   events: [],
 })
 
-export const mutations = {  
+export const mutations = {
   request(state) {
     state.token = ''
     state.status = 'loading'
@@ -28,9 +28,9 @@ export const mutations = {
     state.status = 'sucess';
     state.username = info.user.name;
     state.email = info.user.email;
-    state.token = info.token;    
+    state.token = info.token;
     state.rights = info.rights;
-    setHeaders(state.token)    
+    setHeaders(state.token)
     if (info.refreshToken) {
       // only when its a true login, not a /refresh
       localStorage.setItem('refresh-token', info.refreshToken)
@@ -41,7 +41,7 @@ export const mutations = {
     error(`auth error: ${messaage}`, 'auth.error')
     state.status = 'error'
   },
-  logout(state) {    
+  logout(state) {
     localStorage.removeItem('refresh-token');
     setHeaders(false)
     state.status = '';
@@ -53,8 +53,8 @@ export const mutations = {
     state.rights = [];
   },
 
-  /**   
-   * @param {*} state 
+  /**
+   * @param {*} state
    * @param {*} event Object {name, call, action}
    *   action: 'login', 'logout', 'error'
    *   action can be string for one or an array of events
@@ -72,7 +72,7 @@ export const mutations = {
     } else {
       state.events.push(event)
     }
-  }, 
+  },
   eventDelete(state, event) {
     if (typeof event === 'string') {
       event = {name : event}
@@ -92,30 +92,30 @@ export const actions = {
     commit('request');
     try {
       let result = await Axios.post('/auth', {
-        username: user.username, 
+        username: user.username,
         password: user.password
       })
       if (axiosActions.hasErrors(result)) {
         await dispatch('auth/logout')
         throw new Error(axiosActions.errorMessage(result))
-      } else {         
+      } else {
         await dispatch('auth/sendEvent', {action: 'login', data: axiosActions.data(result)}, {root: true})
-        commit('success', axiosActions.data(result));        
+        commit('success', axiosActions.data(result));
         return true;
       }
     } catch( err) {
-      await dispatch('auth/logout')      
+      await dispatch('auth/logout')
       throw new Error(err.message)
     }
   },
 
   async logout({commit, dispatch}) {
     commit('logout')
-    await dispatch('auth/sendEvent', {action: 'logout'}, {root: true})    
+    await dispatch('auth/sendEvent', {action: 'logout'}, {root: true})
   },
 
   async sendEvent({commit, dispatch, getters}, eventObj) {
-    try {  
+    try {
       let evts = getters.eventList(eventObj.action);
       for (let index = 0; index < evts.length; index++) {
         debug(`sendEvent ${eventObj.action} call: ${evts[index].call}`)
@@ -124,7 +124,7 @@ export const actions = {
     } catch(e) {
       error(`error on eventbus ${e.message}`, 'auth.sendEvent')
     }
-  },  
+  },
 
   async registerEvent({commit}, event) {
     debug(`register event ${event.name}.${event.call}`, 'store.auth.registerEvent')
@@ -135,8 +135,8 @@ export const actions = {
   },
   /**
    * restore the session from the previous stored token
-   * 
-   * @param {} 
+   *
+   * @param {}
    */
   async restore({commit, dispatch}) {
     let token =  localStorage.getItem('refresh-token') || '';
@@ -144,21 +144,21 @@ export const actions = {
       return Axios.post('/auth/refresh', {
         token: token
       })
-      .then( async (result) => {          
-        if (axiosActions.hasErrors(result)) {
-          dispatch('auth/logout')
-          throw new Error(axiosActions.errorMessage(result))
-        } else {      
-          debug('restore success')  
-          commit('success', axiosActions.data(result));
-          await dispatch('auth/sendEvent', {action: 'login', data: axiosActions.data(result)}, {root: true})
-          return true;
-        }
-      })
-      .catch( async (err) => {
-        await dispatch('auth/logout')
-        throw new Error(err.message)
-      })
+        .then(async (result) => {
+          if (axiosActions.hasErrors(result)) {
+            dispatch('auth/logout')
+            throw new Error(axiosActions.errorMessage(result))
+          } else {
+            debug('restore success')
+            commit('success', axiosActions.data(result));
+            await dispatch('auth/sendEvent', {action: 'login', data: axiosActions.data(result)}, {root: true})
+            return true;
+          }
+        })
+        .catch(async (err) => {
+          await dispatch('logout')
+          throw new Error(err.message)
+        })
     }
   }
 }
@@ -170,12 +170,12 @@ export const getters = {
   authHeader: (state) => {
     debug(state, 'auth.authHeader')
     if (state.token && state.token.length) {
-      return { 'authorization': `bearer ${state.token}` }      
+      return { 'authorization': `bearer ${state.token}` }
     }
     return false;
   },
-  eventList: (state) => (action) => {   
-    if (action.length) { 
+  eventList: (state) => (action) => {
+    if (action.length) {
       return state.events.filter( e => e.action.indexOf(action) >= 0 );
     } else {
       error(`eventlist needs an action paramater`)
@@ -187,7 +187,7 @@ export const getters = {
   hasRights: (state) => (right) => {
     return state.rights.indexOf(right) >= 0;
   }
-  
+
 }
 
 export const auth = {

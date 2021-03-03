@@ -13,9 +13,9 @@ export const state = () => ({
   }
 })
 
-export const mutations = {  
-  clear(state) {    
-    state.message = '';    
+export const mutations = {
+  clear(state) {
+    state.message = '';
     state.status = apiState.idle
   },
   error(state, err) {
@@ -26,7 +26,7 @@ export const mutations = {
   apiState(state, a) {
     state.status = a;
   },
-  
+
   leftDrawer(state, show) {
     state.leftDrawer = !! show
   },
@@ -38,12 +38,11 @@ export const mutations = {
   },
   dialog(state, show) {
     state.dialog = {
-      name: show.name,
+      name: show.name ? show.name : show.dialog,
       id: show.id === '' || !show.id || show.id === '0' || undefined ? false : show.id
     }
     debug(`dialog: ${state.dialog.name} on id: ${state.dialog.id}`, 'status.dialog')
   },
-  
 }
 
 export const actions = {
@@ -66,9 +65,9 @@ export const actions = {
   async apiStatus({commit}, status) {
     commit('apiState', status)
   },
-  dialog({commit}, status) {
+  dialog({commit}, status = false) {
     if (typeof status === 'string') {
-      commit('dialog', {name: status, id: 0})  
+      commit('dialog', {name: status, id: 0})
     } else if (typeof status === 'object') {
       commit('dialog', status)
     } else if (typeof status === 'boolean' || status === undefined) {
@@ -81,9 +80,9 @@ export const actions = {
 export const getters = {
   hasError: (state) => { return state.status === 'error'},
   isOk: (state) => { return state.status === ''},
-  errorMessage: (state) => { return state.message},  
+  errorMessage: (state) => { return state.message},
   leftDrawer: (state) => { return state.leftDrawer},
-  rightDrawer: (state) => { return state.rightDrawer},  
+  rightDrawer: (state) => { return state.rightDrawer},
   dialogName: (state) => state.dialog.name,
   dialogId: (state) => state.dialog.id,
 }
