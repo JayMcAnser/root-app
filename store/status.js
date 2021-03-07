@@ -10,6 +10,9 @@ export const state = () => ({
   dialog: {
     name: '',
     id: 0,
+  },
+  mode: {
+    active: 'view'
   }
 })
 
@@ -43,6 +46,10 @@ export const mutations = {
     }
     debug(`dialog: ${state.dialog.name} on id: ${state.dialog.id}`, 'status.dialog')
   },
+  mode(state, setup) {
+    state.mode.active = setup.active;
+    debug(`currentMode ${state.mode.active}`)
+  }
 }
 
 export const actions = {
@@ -75,6 +82,21 @@ export const actions = {
     } else {
       warn(`unknonw dialog type ${JSON.stringify(status)}`)
     }
+  },
+  async checkAutoSave(context) {
+    if (context.getters.isModeEdit) {
+      // this can throw an error if it's not allowed or other things
+      console.log(context)
+      await context.dispatch('board/save', undefined, {root: true});
+    }
+  },
+  async modeEdit(context) {
+    await context.dispatch('checkAutoSave');
+    context.commit('mode', {active: 'edit'})
+  },
+  async modeView(context) {
+    await context.dispatch('checkAutoSave');
+    context.commit('mode', {active: 'view'})
   }
 }
 export const getters = {
@@ -85,6 +107,7 @@ export const getters = {
   rightDrawer: (state) => { return state.rightDrawer},
   dialogName: (state) => state.dialog.name,
   dialogId: (state) => state.dialog.id,
+  isModeEdit: (state) => state.mode.active === 'edit',
 }
 
 export const status = {
