@@ -86,17 +86,21 @@ export const actions = {
   async checkAutoSave(context) {
     if (context.getters.isModeEdit) {
       // this can throw an error if it's not allowed or other things
-      console.log(context)
+      // console.log(context)
+      debug('autosave', 'status.checkAutoSave')
       await context.dispatch('board/save', undefined, {root: true});
     }
   },
   async modeEdit(context) {
-    await context.dispatch('checkAutoSave');
-    context.commit('mode', {active: 'edit'})
+    return context.dispatch('checkAutoSave').then( () => {
+      context.commit('mode', {active: 'edit'})
+    });
   },
   async modeView(context) {
-    await context.dispatch('checkAutoSave');
-    context.commit('mode', {active: 'view'})
+    return context.dispatch('checkAutoSave').then((x) => {
+      debug('switch view', 'status.modeView')
+      context.commit('mode', {active: 'view'})
+    });
   }
 }
 export const getters = {

@@ -7,7 +7,7 @@
         v-model="email"
         :rules="emailRules"
         required
-      ></v-text-field>            
+      ></v-text-field>
       <v-text-field
         label="Enter your password"
         v-model="password"
@@ -21,16 +21,16 @@
       ></v-text-field>
       <v-layout justify-space-between>
       </v-layout>
-    </v-card-text>    
+    </v-card-text>
     <v-card-actions>
       <v-btn @click="login" >Login</v-btn>
       <v-btn @click="cancel">Cancel</v-btn>
-    </v-card-actions>    
-    <v-card-text>    
+    </v-card-actions>
+    <v-card-text>
        <a href="requestPassword()">Forgot Password</a>
     </v-card-text>
   </v-card>
-  <v-alert 
+  <v-alert
     color="red"
     v-if="errorMessage">
     Could not login in. Error: {{errorMessage}}
@@ -41,7 +41,7 @@
 
 <script>
   /**
-   * emits: 
+   * emits:
    *   - login:success as user did loging
    *   - login:fail if an error occured
    *   - login:cancel if the user presses the cancel button
@@ -71,7 +71,7 @@
         let email = this.email
         let password = this.password
         let vm = this;
-        this.$store.dispatch('auth/login', { username: email, password: password })
+        return this.$store.dispatch('auth/login', { username: email, password: password })
           .then((result) => {
             debug(`user ${email} did login`, 'login-form')
             vm.$emit('login:success', result)
@@ -79,12 +79,12 @@
           .catch( (err) => {
             error(err, 'login-form')
             vm.errorMessage = err.message
-            vm.$emit('login:fail', err)           
+            vm.$emit('login:fail', err)
           })
       },
       cancel: function() {
         debug('user cancled', 'login-form')
-        this.$emit('login:cancel')        
+        this.$emit('login:cancel')
       },
       requestPassword() {
         alert('please send a message to us so we can help you')

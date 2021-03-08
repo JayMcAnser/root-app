@@ -30,6 +30,8 @@ export const mutations = {
     state.email = info.user.email;
     state.token = info.token;
     state.rights = info.rights;
+
+    localStorage.setItem('authtoken', info.token)
     setHeaders(state.token)
     if (info.refreshToken) {
       // only when its a true login, not a /refresh
@@ -91,6 +93,8 @@ export const actions = {
   async login({commit, dispatch}, user) {
     commit('request');
     try {
+      // clear any login errors
+      await dispatch('status/clear', undefined, {root: true})
       let result = await Axios.post('/auth', {
         username: user.username,
         password: user.password
