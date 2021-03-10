@@ -9,6 +9,7 @@ export const state = () => ({
   actions: {},
   dialog: {
     name: '',
+    mode: false,
     id: 0,
   },
   mode: {
@@ -42,7 +43,8 @@ export const mutations = {
   dialog(state, show) {
     state.dialog = {
       name: show.name ? show.name : show.dialog,
-      id: show.id === '' || !show.id || show.id === '0' || undefined ? false : show.id
+      id: show.id === '' || !show.id || show.id === '0' || undefined ? false : show.id,
+      mode: show.mode ? show.mode : undefined
     }
     debug(`dialog: ${state.dialog.name} on id: ${state.dialog.id}`, 'status.dialog')
   },
@@ -111,6 +113,7 @@ export const getters = {
   rightDrawer: (state) => { return state.rightDrawer},
   dialogName: (state) => state.dialog.name,
   dialogId: (state) => state.dialog.id,
+  dialogMode: (state) => state.dialog.mode,
   isModeEdit: (state) => state.mode.active === 'edit',
 }
 
