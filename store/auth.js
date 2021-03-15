@@ -6,6 +6,7 @@ import { axiosActions } from '../lib/const';
 import { debug, warn, error } from '../lib/logging';
 import Axios from '../lib/axios';
 import {setHeaders} from '../lib/axios';
+import Vue from 'vue';
 
 
 export const state = () => ({
@@ -100,9 +101,10 @@ export const actions = {
         password: user.password
       })
       if (axiosActions.hasErrors(result)) {
-        await dispatch('auth/logout')
+        await dispatch('auth/logout', undefined,{root: true})
         throw new Error(axiosActions.errorMessage(result))
       } else {
+        Vue.$cookies.set('dropperAuth', axiosActions.data(result).token)
         await dispatch('auth/sendEvent', {action: 'login', data: axiosActions.data(result)}, {root: true})
         commit('success', axiosActions.data(result));
         return true;
@@ -147,7 +149,8 @@ export const actions = {
     if (token && token.length) {
       return Axios.post('/auth/refresh', {
         token: token
-      })
+      }
+        )
         .then(async (result) => {
           if (axiosActions.hasErrors(result)) {
             dispatch('auth/logout')
