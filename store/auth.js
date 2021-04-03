@@ -6,7 +6,7 @@ import { axiosActions } from '../lib/const';
 import { debug, warn, error } from '../lib/logging';
 import Axios from '../lib/axios';
 import {setHeaders} from '../lib/axios';
-import Vue from 'vue';
+// SHOULD WORK :  import Vue from 'vue';
 
 
 export const state = () => ({
@@ -104,7 +104,7 @@ export const actions = {
         await dispatch('auth/logout', undefined,{root: true})
         throw new Error(axiosActions.errorMessage(result))
       } else {
-        Vue.$cookies.set('dropperAuth', axiosActions.data(result).token)
+        // ToDo: TMP SHOULD WORK Vue.$cookies.set('dropperAuth', axiosActions.data(result).token)
         await dispatch('auth/sendEvent', {action: 'login', data: axiosActions.data(result)}, {root: true})
         commit('success', axiosActions.data(result));
         return true;
