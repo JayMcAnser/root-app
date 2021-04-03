@@ -170,7 +170,7 @@ export const actions = {
   }
 }
 export const getters = {
-  isLoggedIn: (state) => { return !!state.token},
+  isLoggedIn: (state) => { return !!state.token },
   status: (state) => { return state.status},
   user: (state) => { return {username: state.username, email: state.email}},
   token: (state) => { return state.token.length ? state.token : false },
