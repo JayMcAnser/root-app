@@ -101,7 +101,7 @@ export const actions = {
         password: user.password
       })
       if (axiosActions.hasErrors(result)) {
-        await dispatch('auth/logout', undefined,{root: true})
+       // await dispatch('auth/logout', undefined,{root: true})
         throw new Error(axiosActions.errorMessage(result))
       } else {
         // ToDo: TMP SHOULD WORK Vue.$cookies.set('dropperAuth', axiosActions.data(result).token)
@@ -110,7 +110,7 @@ export const actions = {
         return true;
       }
     } catch( err) {
-      await dispatch('auth/logout')
+      await dispatch('auth/logout',  undefined, {root: true})
       throw new Error(err.message)
     }
   },
