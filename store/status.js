@@ -3,6 +3,7 @@ import { apiState } from '../lib/const';
 
 export const state = () => ({
   message: '',
+  title: '',
   status: apiState.idle,
   leftDrawer: false,
   rightDrawer: false,
@@ -20,11 +21,13 @@ export const state = () => ({
 export const mutations = {
   clear(state) {
     state.message = '';
+    state.title = '';
     state.status = apiState.idle
   },
   error(state, err) {
     errorReport(err.message, err.where)
     state.message = err.message;
+    state.title = err.title;
     state.status = apiState.error
   },
   apiState(state, a) {
@@ -109,6 +112,7 @@ export const getters = {
   hasError: (state) => { return state.status === 'error'},
   isOk: (state) => { return state.status === ''},
   errorMessage: (state) => { return state.message},
+  isError: (state) => {return state.status === apiState.error},
   leftDrawer: (state) => { return state.leftDrawer},
   rightDrawer: (state) => { return state.rightDrawer},
   dialogName: (state) => state.dialog.name,
