@@ -75,6 +75,7 @@ export const mutations = {
     } else {
       state.events.push(event)
     }
+    // console.log('evts:', state.events)
   },
   eventDelete(state, event) {
     if (typeof event === 'string') {
@@ -107,6 +108,7 @@ export const actions = {
         // ToDo: TMP SHOULD WORK Vue.$cookies.set('dropperAuth', axiosActions.data(result).token)
         await dispatch('auth/sendEvent', {action: 'login', data: axiosActions.data(result)}, {root: true})
         commit('success', axiosActions.data(result));
+        await dispatch('auth/sendEvent', {action: 'login'}, {root: true})
         return true;
       }
     } catch( err) {
@@ -116,6 +118,7 @@ export const actions = {
   },
 
   async logout({commit, dispatch}) {
+    debug('logout', 'store.board.logout')
     commit('logout')
     await dispatch('auth/sendEvent', {action: 'logout'}, {root: true})
   },
@@ -124,7 +127,7 @@ export const actions = {
     try {
       let evts = getters.eventList(eventObj.action);
       for (let index = 0; index < evts.length; index++) {
-        debug(`sendEvent ${eventObj.action} call: ${evts[index].call}`)
+        debug(`sendEvent ${eventObj.action} call: ${evts[index].call}`, 'store.auth.sendEvent')
         await dispatch(evts[index].call, eventObj, {root: true})
       }
     } catch(e) {
@@ -133,7 +136,7 @@ export const actions = {
   },
 
   async registerEvent({commit}, event) {
-    debug(`register event ${event.name}.${event.call}`, 'store.auth.registerEvent')
+    debug(`register event ${event.name}.${event.call} on ${event.action}`, 'store.auth.registerEvent')
     commit('eventAdd', event);
   },
   async unRegisterEvent({commit}, event) {
