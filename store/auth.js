@@ -106,9 +106,15 @@ export const actions = {
         throw new Error(axiosActions.errorMessage(result))
       } else {
         // ToDo: TMP SHOULD WORK Vue.$cookies.set('dropperAuth', axiosActions.data(result).token)
-        await dispatch('auth/sendEvent', {action: 'login', data: axiosActions.data(result)}, {root: true})
+        try {
+          await dispatch('user/init', axiosActions.data(result).user, {root: true} )
+        } catch (e) {
+          // if its an error we do not minde
+        }
+        console.log('XXXXX', result)
+        await dispatch('auth/sendEvent', {action: 'login', data: axiosActions.data(result).user}, {root: true})
         commit('success', axiosActions.data(result));
-        await dispatch('auth/sendEvent', {action: 'login'}, {root: true})
+        // Why again??  await dispatch('auth/sendEvent', {action: 'login'}, {root: true})
         return true;
       }
     } catch( err) {
@@ -128,7 +134,7 @@ export const actions = {
       let evts = getters.eventList(eventObj.action);
       for (let index = 0; index < evts.length; index++) {
         debug(`sendEvent ${eventObj.action} call: ${evts[index].call}`, 'store.auth.sendEvent')
-        await dispatch(evts[index].call, eventObj, {root: true})
+        await dispatch(evts[index].call, eventObj.data, {root: true})
       }
     } catch(e) {
       error(`error on eventbus ${e.message}`, 'auth.sendEvent')

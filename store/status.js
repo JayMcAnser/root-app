@@ -7,6 +7,7 @@ export const state = () => ({
   status: apiState.idle,
   leftDrawer: false,
   rightDrawer: false,
+  bottomDrawer: false,
   actions: {},
   dialog: {
     name: '',
@@ -40,6 +41,10 @@ export const mutations = {
   rightDrawer(state, show) {
     state.rightDrawer = !! show
   },
+  bottomDrawer(state, show) {
+    state.bottomDrawer = !! show
+  },
+
   toggleRightDrawer(state) {
     state.rightDrawer = !state.rightDrawer
   },
@@ -69,6 +74,15 @@ export const actions = {
   },
   async rightDrawer({commit}, show) {
     commit('rightDrawer', show)
+  },
+  async bottomDrawer({commit}, show) {
+    if (show) {
+      setTimeout(() => { // must delay to stop it from closing
+        commit('bottomDrawer', show)
+      }, 0)
+    } else {
+      commit('bottomDrawer', show)
+    }
   },
   async toggleRightDrawer({commit}) {
     debug(`toggle right drawer`, 'status');
@@ -115,6 +129,7 @@ export const getters = {
   isError: (state) => {return state.status === apiState.error},
   leftDrawer: (state) => { return state.leftDrawer},
   rightDrawer: (state) => { return state.rightDrawer},
+  bottomDrawer: (state) => { return state.bottomDrawer},
   dialogName: (state) => state.dialog.name,
   dialogId: (state) => state.dialog.id,
   dialogMode: (state) => state.dialog.mode,
