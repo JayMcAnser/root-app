@@ -16,7 +16,8 @@ export const state = () => ({
   },
   mode: {
     active: 'view'
-  }
+  },
+  menu: 'home'
 })
 
 export const mutations = {
@@ -24,6 +25,7 @@ export const mutations = {
     state.message = '';
     state.title = '';
     state.status = apiState.idle
+    state.menu = 'home'
   },
   error(state, err) {
     errorReport(err.message, err.where)
@@ -59,6 +61,14 @@ export const mutations = {
   mode(state, setup) {
     state.mode.active = setup.active;
     debug(`currentMode ${state.mode.active}`)
+  },
+  menu(state, part) {
+    const MENUS = ['home', 'art']
+    if (MENUS.indexOf(part) < 0) {
+      warn(`unknown menu activated: ${part}`);
+    } else {
+      state.menu = part
+    }
   }
 }
 
@@ -120,7 +130,17 @@ export const actions = {
       debug('switch view', 'status.modeView')
       context.commit('mode', {active: 'view'})
     });
+  },
+
+  async menu({commit}, part) {
+    try {
+      commit('menu', part.menu);
+    } catch (e) {
+      error(e.message, 'status.menu')
+    }
   }
+
+
 }
 export const getters = {
   hasError: (state) => { return state.status === 'error'},
@@ -134,6 +154,7 @@ export const getters = {
   dialogId: (state) => state.dialog.id,
   dialogMode: (state) => state.dialog.mode,
   isModeEdit: (state) => state.mode.active === 'edit',
+  menuActive: (state) => (part) => state.menu === part,
 }
 
 export const status = {

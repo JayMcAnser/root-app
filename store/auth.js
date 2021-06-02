@@ -16,7 +16,7 @@ export const state = () => ({
   password: '',
   token: '',
   rights: [],
-  resfreshToken: '',
+  refreshToken: '',
   events: [],
 })
 
@@ -51,7 +51,7 @@ export const mutations = {
     state.username = '';
     state.email = '';
     state.password = '';
-    state.token = '',
+    state.token = '';
     state.refreshToken = '';
     state.rights = [];
   },
