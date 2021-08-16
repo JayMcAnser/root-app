@@ -41,7 +41,7 @@ export const mutations = {
       } else {
         warn('the rights are not set for this user.')
       }
-      console.log('user:', state.email, 'rights:', JSON.stringify(state.access))
+      debug(`user: ${state.email}, rights:, ${JSON.stringify(state.access)}`)
     } catch (e) {
       error(e.message, 'user.login')
     }

@@ -18,6 +18,7 @@ export const state = () => ({
   rights: [],
   refreshToken: '',
   events: [],
+  debug: true
 })
 
 export const mutations = {
@@ -92,7 +93,7 @@ export const mutations = {
 }
 
 export const actions = {
-  async login({commit, dispatch}, user) {
+  async login({state, commit, dispatch}, user) {
     commit('request');
     try {
       // clear any login errors
@@ -111,9 +112,21 @@ export const actions = {
         } catch (e) {
           // if its an error we do not minde
         }
-        console.log('XXXXX', result)
         await dispatch('auth/sendEvent', {action: 'login', data: axiosActions.data(result).user}, {root: true})
         commit('success', axiosActions.data(result));
+        if (state.debug) {
+          try {
+            let info = await Axios.get('info');
+            if (!axiosActions.hasErrors(info)) {
+              info = axiosActions.data(info);
+              debug(`mongo: ${info.mongo ? info.mongo.connectionString : '--no info--'}`)
+            }
+          } catch (e) {
+            // not interested in the errors.
+          }
+        }
+
+
         // Why again??  await dispatch('auth/sendEvent', {action: 'login'}, {root: true})
         return true;
       }
@@ -153,7 +166,7 @@ export const actions = {
    *
    * @param {}
    */
-  async restore({commit, dispatch}) {
+  async restore({state, commit, dispatch}) {
     let token =  localStorage.getItem('refresh-token') || '';
     if (token && token.length) {
       return Axios.post('/auth/refresh', {
@@ -168,6 +181,13 @@ export const actions = {
             debug('restore success')
             commit('success', axiosActions.data(result));
             await dispatch('auth/sendEvent', {action: 'login', data: axiosActions.data(result)}, {root: true})
+            if (state.debug) {
+              let info = await Axios.get('info');
+              if (!axiosActions.hasErrors(info)) {
+                info = axiosActions.data(info);
+                debug(`mongo: ${info.mongo ? info.mongo.connectionString : '--no info--'}`)
+              }
+            }
             return true;
           }
         })
