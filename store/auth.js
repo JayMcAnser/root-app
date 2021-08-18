@@ -112,7 +112,17 @@ export const actions = {
         } catch (e) {
           // if its an error we do not minde
         }
-        await dispatch('auth/sendEvent', {action: 'login', data: axiosActions.data(result).user}, {root: true})
+        await dispatch('auth/sendEvent', {action: 'login', data: axiosActions.data(result).user}, {root: true});
+
+        Axios.onTokenExpired( async () => {
+          try {
+            debug(`auth.onTokenExpired called`)
+            await this.logout({commit, dispatch})
+            return true;
+          } catch (e) {
+            return false;
+          }
+        })
         commit('success', axiosActions.data(result));
         if (state.debug) {
           try {
